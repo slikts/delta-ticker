@@ -26,7 +26,7 @@ function Ticker(config) {
   var _config = Object.create(defaults);
 
   if (missing.length) {
-    throw Error('Missing config properties: ' + missing.join(', '));
+    throw TypeError('Missing config properties: ' + missing.join(', '));
   }
 
   // Extend the default config
