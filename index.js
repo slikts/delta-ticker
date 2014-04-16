@@ -1,7 +1,6 @@
 'use strict';
 
 var defaults = {
-  immediate: false,
   limit: 0,
   async: false
 };
@@ -37,7 +36,14 @@ var proto = Ticker.prototype = {
     }
 
     this._started = true;
+    this._before = Date.now();
     this._count = 0;
+    this._log = {
+      now: [],
+      before: [],
+      dt: [],
+      nb: []
+    };
 
     this._tick();
 
@@ -65,6 +71,8 @@ var proto = Ticker.prototype = {
       return;
     }
 
+    this._before = Date.now();
+
     if (config.async) {
       config.tick(this._tock);
     } else {
@@ -75,7 +83,7 @@ var proto = Ticker.prototype = {
   _tock: function _tock() {
     var config = this._config;
     var now = Date.now();
-    var dt = config.delay - (now - before);
+    var dt = Math.max(0, config.delay - (now - this._before));
 
     if (config.limit) {
       this._count += 1;
@@ -85,11 +93,9 @@ var proto = Ticker.prototype = {
       }
     }
 
-    if (config.delay === 0 || dt <= 0) {
-      setImmediate(this._tick);
-    } else {
-      setTimeout(this._tick, config.delay);
-    }
+    this._before = now + dt;
+
+    setTimeout(this._tick, dt);
   }
 };
 

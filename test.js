@@ -28,7 +28,7 @@ describe('ticker', function() {
   });
 
   it('missing config properties should result in an error', function() {
-    Ticker.should['throw'](Error);
+    Ticker.should['throw'](/missing config prop/i);
     Ticker.bind(null, {
       delay: 0,
       tick: function() {}
@@ -60,28 +60,54 @@ describe('ticker', function() {
 
     var config = {
       delay: 5,
-      tick: function() {
+      tick: function(next) {
         ticks.push(Date.now());
-        var q = 1e6;
-        while (q--) {}
+        setTimeout(next, 5);
       },
-      limit: 50
+      async: true,
+      limit: 5,
+      stop: function() {
+        var dts = ticks.map(function(x, i, arr) {
+          return x - arr[i - 1];
+        }).slice(1);
+        var avg = dts.reduce(function(a, b) {
+          return a + b;
+        }) / dts.length;
+
+        console.log(avg);
+        avg.should.be.gte(config.delay);
+        avg.should.be.lt(config.delay + 2);
+
+        done();
+      }
     };
 
     Ticker(config).start();
-
-    setTimeout(function() {
-      var p = ticks.map(function(x, i, arr) {
-        return x - arr[i - 1];
-      }).slice(1);
-      console.log(p.reduce(function(a, b) {
-        return a + b;
-      }) / p.length);
-      done();
-    }, (config.delay + 1) * config.limit);
   });
-  // it('should throw an error if attempting to start an already started timer', function(done) {});
-  // it('should throw an error if attempting to stop an already stopped timer', function(done) {});
-  // it('should call config.stop() callback after stopping', function(done) {});
-  // it('should not tick if configured not to be immediate and stopped before the delay ends', function(done) {});
+
+  it('should throw an error if attempting to start an already started timer', function() {
+    (function() {
+      Ticker({
+        tick: function() {},
+        delay: 0
+      }).start().start();
+    }).should['throw'](/already started/);
+  });
+  it('should throw an error if attempting to stop an already stopped timer', function() {
+    (function() {
+      Ticker({
+        tick: function() {},
+        delay: 0
+      }).stop();
+    }).should['throw'](/ticker not started/i);
+  });
+
+  it('should call config.stop() callback after stopping', function(done) {
+    Ticker({
+      tick: function() {},
+      delay: 0,
+      limit: 1,
+      stop: done
+    }).start();
+  });
 });
