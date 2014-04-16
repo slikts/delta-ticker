@@ -1,7 +1,7 @@
 # Simple delta time ticker
 
 Allows setting intervals using delta time for consistency. The difference from `setInterval` is that
-tasks can be asynchronous and can't run into eachother.
+tasks can be asynchronous and can't run into each other.
 
 ### Examples
 

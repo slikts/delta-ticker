@@ -20,10 +20,10 @@ var required = ['delay', 'task'];
  */
 function Ticker(config) {
   var obj = Object.create(proto);
+  var _config = obj._config = Object.create(defaults);
   var missing = !config ? required : required.filter(function(key) {
     return config[key] === undefined;
   });
-  var _config = Object.create(defaults);
 
   if (missing.length) {
     throw TypeError('Missing config properties: ' + missing.join(', '));
@@ -36,8 +36,6 @@ function Ticker(config) {
 
   obj._tick = obj._tick.bind(obj);
   obj._tock = obj._tock.bind(obj);
-
-  obj._config = _config;
 
   return obj;
 }

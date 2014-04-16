@@ -74,7 +74,6 @@ describe('ticker', function() {
           return a + b;
         }) / dts.length;
 
-        console.log(avg);
         avg.should.be.gte(config.delay);
         avg.should.be.lt(config.delay + 2);
 
@@ -93,6 +92,7 @@ describe('ticker', function() {
       }).start().start();
     }).should['throw'](/already started/);
   });
+
   it('should throw an error if attempting to stop an already stopped timer', function() {
     (function() {
       Ticker({
