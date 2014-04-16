@@ -9,7 +9,6 @@ var defaults = {
   limit: 0,
   async: false
 };
-
 // The constructor will fail if these config properties are missing
 var required = ['delay', 'task'];
 
@@ -19,7 +18,7 @@ var required = ['delay', 'task'];
  * @param {{ limit: Number, async: Boolean, task: Function, stop: Function }} config
  */
 function Ticker(config) {
-  var obj = Object.create(proto);
+  var obj = Object.create(Ticker.prototype);
   var _config = obj._config = Object.create(defaults);
   var missing = !config ? required : required.filter(function(key) {
     return config[key] === undefined;
@@ -40,7 +39,7 @@ function Ticker(config) {
   return obj;
 }
 
-var proto = Ticker.prototype = {
+Ticker.prototype = {
   _started: false,
   _count: 0,
 
