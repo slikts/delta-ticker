@@ -25,7 +25,7 @@ Ticker({ // the `new` keyword is not required
 }).start();
 ```
 
-Endless 100ms interval with a synchronous task:
+Endless 100 millosecond interval with a synchronous task:
 
 ```
 Ticker({
