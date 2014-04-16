@@ -50,6 +50,14 @@ setTimeout(function() {
 }, 500);
 ```
 
+### Install
+
+`npm install delta-ticker`
+
+### Test
+
+`make test`
+
 ### TODO
 
  * An option to use `process.hrtime()` (real time) in Node.js
