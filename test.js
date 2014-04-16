@@ -10,7 +10,7 @@ describe('ticker', function() {
     var count = 0;
     var config = {
       delay: 2,
-      tick: function() {
+      task: function() {
         count += 1;
       },
       limit: 5
@@ -31,7 +31,7 @@ describe('ticker', function() {
     Ticker.should['throw'](/missing config prop/i);
     Ticker.bind(null, {
       delay: 0,
-      tick: function() {}
+      task: function() {}
     }).should.not['throw'](Error);
   });
 
@@ -39,7 +39,7 @@ describe('ticker', function() {
     var count = 0;
     var config = {
       delay: 10,
-      tick: function(next) {
+      task: function(next) {
         count += 1;
         setImmediate(next);
       },
@@ -60,7 +60,7 @@ describe('ticker', function() {
 
     var config = {
       delay: 5,
-      tick: function(next) {
+      task: function(next) {
         ticks.push(Date.now());
         setTimeout(next, 5);
       },
@@ -88,7 +88,7 @@ describe('ticker', function() {
   it('should throw an error if attempting to start an already started timer', function() {
     (function() {
       Ticker({
-        tick: function() {},
+        task: function() {},
         delay: 0
       }).start().start();
     }).should['throw'](/already started/);
@@ -96,7 +96,7 @@ describe('ticker', function() {
   it('should throw an error if attempting to stop an already stopped timer', function() {
     (function() {
       Ticker({
-        tick: function() {},
+        task: function() {},
         delay: 0
       }).stop();
     }).should['throw'](/ticker not started/i);
@@ -104,7 +104,7 @@ describe('ticker', function() {
 
   it('should call config.stop() callback after stopping', function(done) {
     Ticker({
-      tick: function() {},
+      task: function() {},
       delay: 0,
       limit: 1,
       stop: done
