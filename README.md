@@ -66,6 +66,17 @@ var ticker = Ticker({
 }).start();
 ```
 
+Extend the ticker's config after construction:
+
+```js
+var ticker = Ticker();
+
+ticker.use({
+  task: function() {},
+  delay: 10
+}).start();
+```
+
 ### Install
 
 `npm install delta-ticker`
