@@ -15,11 +15,11 @@ Asynchronously count to 5 with 15 millisecond intervals:
 var count = 0;
 Ticker({ // the `new` keyword is not required
   async: true,
-  task: function(next) {
+  task: function(done) { // the `done` argument is only passed to async-ous tasks
     setTimeout(function() {
       count += 1;
-      next();
-    }, 10); // task will take 10ms, but the interval will still be 15ms on average
+      done();
+    }, 10); // the task will take 10ms, but the interval will still be 15ms on average
   },
   limit: 5,
   delay: 15,
@@ -33,7 +33,7 @@ Endless 100 millosecond interval with a synchronous task:
 
 ```js
 Ticker({
-  task: function() { // unlike with the async example, there's no `next` argument
+  task: function() { // unlike with the async example, there's no `done` argument
     console.log('on and on…');
   },
   delay: 100

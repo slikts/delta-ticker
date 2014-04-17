@@ -51,9 +51,9 @@ describe('ticker', function() {
     var count = 0;
     var config = {
       delay: 10,
-      task: function(next) {
+      task: function(done) {
         count += 1;
-        setImmediate(next);
+        setImmediate(done);
       },
       async: true,
       limit: 5
@@ -72,9 +72,9 @@ describe('ticker', function() {
 
     var config = {
       delay: 5,
-      task: function(next) {
+      task: function(done) {
         ticks.push(Date.now());
-        setTimeout(next, 5);
+        setTimeout(done, 5);
       },
       async: true,
       limit: 20,
@@ -96,9 +96,9 @@ describe('ticker', function() {
 
     var config = {
       delay: 25,
-      task: function(next) {
+      task: function(done) {
         ticks.push(Date.now());
-        setTimeout(next, 1);
+        setTimeout(done, 1);
       },
       async: true,
       limit: 20,
@@ -169,9 +169,9 @@ describe('ticker', function() {
     var ticks = [];
 
     var config = {
-      task: function(next, dt) {
+      task: function(done, dt) {
         ticks.push(dt);
-        next();
+        done();
       },
       async: true,
       delay: 2,
