@@ -66,7 +66,7 @@ var ticker = Ticker({
 }).start();
 ```
 
-Extend the ticker's config after construction:
+Extend the ticker's configuration after construction:
 
 ```js
 var ticker = Ticker();
