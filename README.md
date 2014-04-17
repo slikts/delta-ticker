@@ -65,6 +65,7 @@ setTimeout(function() {
 ### TODO
 
  * An option to use `process.hrtime()` (real time) in Node.js
+ * More accuracy tests and comparisons to `setInterval`
 
 ### Notes
 
