@@ -41,6 +41,7 @@ Ticker({
 ```
 
 Stop a ticker:
+
 ```
 var ticker = Ticker({
   task: function() {
@@ -52,6 +53,17 @@ var ticker = Ticker({
 setTimeout(function() {
   ticker.stop();
 }, 500);
+```
+
+Log the interval between tasks:
+
+```
+var ticker = Ticker({
+  task: function(dt) { // the last argument to the task is the delta time
+    console.log('%s milliseconds have passed since last task', dt);
+  },
+  delay: 100
+});
 ```
 
 ### Install
