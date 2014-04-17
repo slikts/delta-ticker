@@ -4,6 +4,16 @@ require('chai').should();
 
 var Ticker = require('./');
 
+function avgTicks(ticks) {
+  var dts = ticks.map(function(x, i, arr) {
+    return x - arr[i - 1];
+  }).slice(1);
+
+  return dts.reduce(function(a, b) {
+    return a + b;
+  }) / dts.length;
+}
+
 describe('ticker', function() {
 
   it('should not tick more times than the limit', function(done) {
@@ -35,7 +45,7 @@ describe('ticker', function() {
     }).should.not['throw'](Error);
   });
 
-  it('should work async-ously if the callback expects an argument', function(done) {
+  it('should tick async-ously for a number of times', function(done) {
     var count = 0;
     var config = {
       delay: 10,
@@ -67,12 +77,31 @@ describe('ticker', function() {
       async: true,
       limit: 5,
       stop: function() {
-        var dts = ticks.map(function(x, i, arr) {
-          return x - arr[i - 1];
-        }).slice(1);
-        var avg = dts.reduce(function(a, b) {
-          return a + b;
-        }) / dts.length;
+        var avg = avgTicks(ticks);
+
+        avg.should.be.gte(config.delay);
+        avg.should.be.lt(config.delay + 2);
+
+        done();
+      }
+    };
+
+    Ticker(config).start();
+  });
+
+  it('should tick with the delays averaging out to a bigger config.delay', function(done) {
+    var ticks = [];
+
+    var config = {
+      delay: 25,
+      task: function(next) {
+        ticks.push(Date.now());
+        setTimeout(next, 1);
+      },
+      async: true,
+      limit: 20,
+      stop: function() {
+        var avg = avgTicks(ticks);
 
         avg.should.be.gte(config.delay);
         avg.should.be.lt(config.delay + 2);

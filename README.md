@@ -1,7 +1,11 @@
 # Simple delta time ticker
 
-Allows setting intervals using delta time for consistency. The difference from `setInterval` is that
-tasks can be asynchronous and can't run into each other.
+Allows setting intervals using delta time for consistency. 
+
+Differences from `setInterval`: 
+ * Tasks can be asynchronous
+ * Tasks that take longer than the interval won't overlap
+ * The intervals are more accurate
 
 ### Examples
 
@@ -65,5 +69,3 @@ setTimeout(function() {
 ### Notes
 
  * Depends on `Date.new` and `Object.create`
- * The intervals will never be shorter than specified
- * The average intervals can be a few milliseconds longer than specified for short delays (<7ms)

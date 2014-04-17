@@ -40,8 +40,8 @@ function Ticker(config) {
 }
 
 Ticker.prototype = {
-  _started: false,
-  _count: 0,
+  _started: null, // Timestamp for when the last task was started
+  _count: 0, // Used with config.limit
 
   /** 
    * Start the ticker, setting the timeout for the first tick.
@@ -52,9 +52,7 @@ Ticker.prototype = {
       throw Error('Ticker already started');
     }
 
-    this._started = true;
-    this._before = Date.now();
-    this._count = 0;
+    this._started = Date.now();
 
     this._tick();
 
@@ -69,19 +67,18 @@ Ticker.prototype = {
     if (!this._started) {
       throw Error('Ticker not started');
     }
+    clearTimeout(this._timeout);
+    delete this._started;
+    delete this._count;
 
     if (this._config.stop) {
       this._config.stop();
     }
 
-    this._started = false;
-    delete this._count;
-    clearTimeout(this._timeout);
-
     return this;
   },
 
-  // The first part of an iteration that determines how to call the second part
+  // The first part of an iteration that determines how to call the task
   _tick: function _tick() {
     var config = this._config;
 
@@ -89,9 +86,6 @@ Ticker.prototype = {
       // The ticker has been stopped
       return;
     }
-
-    // Remember the time before running config.task()
-    this._before = Date.now();
 
     if (config.async) {
       config.task(this._tock);
@@ -101,23 +95,26 @@ Ticker.prototype = {
     }
   },
 
-  // The second part of an iteration that is called after config.task() is done
+  // The second part of an iteration that is called after the task is done
   _tock: function _tock() {
     var config = this._config;
     var now = Date.now();
-    var dt = Math.max(0, config.delay - (now - this._before));
+    var taskTime = now - this._started; // The time it took to finish the last task
+    var delay = Math.max(0, config.delay - (taskTime)); // Delay until the next task is run
 
     if (config.limit) {
       this._count += 1;
 
       if (this._count >= config.limit) {
         this.stop();
+
+        return;
       }
     }
 
-    this._before = now + dt;
+    this._started = now + delay;
 
-    setTimeout(this._tick, dt);
+    this._timeout = setTimeout(this._tick, delay);
   }
 };
 

@@ -1,3 +1,3 @@
-test: ;	./node_modules/.bin/mocha --timeout 500 test.js
+test: ;	./node_modules/.bin/mocha test.js
 
 .PHONY: test
