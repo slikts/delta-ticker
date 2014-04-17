@@ -9,7 +9,7 @@ var defaults = {
   limit: 0,
   async: false
 };
-// The constructor will fail if these config properties are missing
+// The ticker will fail to start if these config properties are missing
 var required = ['delay', 'task'];
 
 /**
@@ -19,22 +19,22 @@ var required = ['delay', 'task'];
  */
 function Ticker(config) {
   var obj = Object.create(Ticker.prototype);
-  var _config = obj._config = Object.create(defaults);
-  var missing = !config ? required : required.filter(function(key) {
-    return config[key] === undefined;
-  });
+  var _tick = obj._tick;
+  var _tock = obj._tock;
 
-  if (missing.length) {
-    throw TypeError('Missing config properties: ' + missing.join(', '));
+  obj._config = Object.create(defaults);
+
+  if (config) {
+    obj.use(config);
   }
 
-  // Extend the default config
-  Object.keys(config).forEach(function(key) {
-    _config[key] = config[key];
-  });
-
-  obj._tick = obj._tick.bind(obj);
-  obj._tock = obj._tock.bind(obj);
+  // This is faster than Function#bind
+  obj._tick = function() {
+    _tick.call(obj);
+  };
+  obj._tock = function() {
+    _tock.call(obj);
+  };
 
   return obj;
 }
@@ -50,13 +50,22 @@ Ticker.prototype = {
    */
   start: function _start() {
     var now = Date.now();
+    var config = this._config;
+
+    var missing = !config ? required : required.filter(function(key) {
+      return config[key] === undefined;
+    });
+
+    if (missing.length) {
+      throw TypeError('Missing config properties: ' + missing.join(', '));
+    }
 
     if (this._started) {
       throw Error('Ticker already started');
     }
 
     this._started = now;
-    this._before = now - this._config.delay;
+    this._before = now - config.delay;
 
     this._tick();
 
@@ -82,7 +91,20 @@ Ticker.prototype = {
 
     return this;
   },
+  /**
+   * Extend the ticker's config.
+   * @param {{ limit: Number, async: Boolean, task: Function, stop: Function }} config
+   * @returns {Ticker}
+   */
+  use: function _use(config) {
+    var _config = this._config;
 
+    Object.keys(config).forEach(function(key) {
+      _config[key] = config[key];
+    });
+
+    return this;
+  },
   // The first part of an iteration that determines how to call the task
   _tick: function _tick() {
     var config = this._config;

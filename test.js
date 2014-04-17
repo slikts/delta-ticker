@@ -37,12 +37,14 @@ describe('ticker', function() {
     }, (config.limit + 2) * config.delay);
   });
 
-  it('missing config properties should result in an error', function() {
-    Ticker.should['throw'](/missing config prop/i);
-    Ticker.bind(null, {
+  it('missing config properties should result in an error when starting', function() {
+    var ticker = Ticker();
+    ticker.start.bind(ticker).should['throw'](/missing config prop/i);
+
+    ticker.use({
       delay: 0,
       task: function() {}
-    }).should.not['throw'](Error);
+    }).start.bind(ticker).should.not['throw'](Error);
   });
 
   it('should tick async-ously for a number of times', function(done) {
