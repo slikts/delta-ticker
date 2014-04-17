@@ -188,4 +188,26 @@ describe('ticker', function() {
     Ticker(config).start();
   });
 
+  it('should call the task just once after the specified delay (work like setTimeout)', function(done) {
+    var count = 0;
+    var _dt;
+
+    var config = {
+      task: function(dt) {
+        count += 1;
+        _dt = dt;
+      },
+      delay: 25,
+      limit: 1,
+      stop: function() {
+        count.should.equal(this.limit);
+        _dt.should.be.gt(this.delay - 0.1);
+        _dt.should.be.lt(this.delay + 2);
+        done();
+      }
+    };
+
+    Ticker(config).start();
+  });
+
 });
