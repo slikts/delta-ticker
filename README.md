@@ -11,7 +11,7 @@ Differences from `setInterval`:
 
 Asynchronously count to 5 with 15 millisecond intervals:
 
-```javascript
+```js
 var count = 0;
 Ticker({ // the `new` keyword is not required
   async: true,
@@ -42,7 +42,7 @@ Ticker({
 
 Stop a ticker:
 
-```
+```js
 var ticker = Ticker({
   task: function() {
     // do something…
@@ -57,7 +57,7 @@ setTimeout(function() {
 
 Log the interval between tasks:
 
-```
+```js
 var ticker = Ticker({
   task: function(dt) { // the last argument to the task is the delta time
     console.log('%s milliseconds have passed since last task', dt);
