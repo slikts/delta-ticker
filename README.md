@@ -48,7 +48,7 @@ var ticker = Ticker({
     // do something…
   },
   delay: 100
-});
+}).start();
 
 setTimeout(function() {
   ticker.stop();
@@ -63,7 +63,7 @@ var ticker = Ticker({
     console.log('%s milliseconds have passed since last task', dt);
   },
   delay: 100
-});
+}).start();
 ```
 
 ### Install
