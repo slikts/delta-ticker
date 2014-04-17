@@ -40,7 +40,8 @@ function Ticker(config) {
 }
 
 Ticker.prototype = {
-  _started: null, // Timestamp for when the last task was started
+  _started: null, // Timestamp for when the current task was started
+  _before: null, // Timestamp for when the last task was started
   _count: 0, // Used with config.limit
 
   /** 
@@ -48,11 +49,14 @@ Ticker.prototype = {
    * @returns {Ticker}
    */
   start: function _start() {
+    var now = Date.now();
+
     if (this._started) {
       throw Error('Ticker already started');
     }
 
-    this._started = Date.now();
+    this._started = now;
+    this._before = now - this._config.delay;
 
     this._tick();
 
@@ -69,6 +73,7 @@ Ticker.prototype = {
     }
     clearTimeout(this._timeout);
     delete this._started;
+    delete this._before;
     delete this._count;
 
     if (this._config.stop) {
@@ -81,6 +86,8 @@ Ticker.prototype = {
   // The first part of an iteration that determines how to call the task
   _tick: function _tick() {
     var config = this._config;
+    var now = Date.now();
+    var dt = now - this._before;
 
     if (!this._started) {
       // The ticker has been stopped
@@ -88,9 +95,9 @@ Ticker.prototype = {
     }
 
     if (config.async) {
-      config.task(this._tock);
+      config.task(this._tock, dt);
     } else {
-      config.task();
+      config.task(dt);
       this._tock();
     }
   },
@@ -112,6 +119,7 @@ Ticker.prototype = {
       }
     }
 
+    this._before = this._started;
     this._started = now + delay;
 
     this._timeout = setTimeout(this._tick, delay);

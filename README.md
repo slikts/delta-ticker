@@ -24,7 +24,7 @@ Ticker({ // the `new` keyword is not required
   limit: 5,
   delay: 15,
   stop: function() {
-    console.log(count === 15);
+    console.log(count === 5); // verify that there were 5 steps
   }
 }).start();
 ```

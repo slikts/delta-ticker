@@ -75,12 +75,12 @@ describe('ticker', function() {
         setTimeout(next, 5);
       },
       async: true,
-      limit: 5,
+      limit: 20,
       stop: function() {
         var avg = avgTicks(ticks);
 
-        avg.should.be.gte(config.delay);
-        avg.should.be.lt(config.delay + 2);
+        avg.should.be.gte(config.delay - 0.1);
+        avg.should.be.lt(config.delay + 1.5);
 
         done();
       }
@@ -103,8 +103,8 @@ describe('ticker', function() {
       stop: function() {
         var avg = avgTicks(ticks);
 
-        avg.should.be.gte(config.delay);
-        avg.should.be.lt(config.delay + 2);
+        avg.should.be.gte(config.delay - 0.1);
+        avg.should.be.lt(config.delay + 0.5);
 
         done();
       }
@@ -139,4 +139,53 @@ describe('ticker', function() {
       stop: done
     }).start();
   });
+
+  it('should pass the delta time to the task', function(done) {
+    var ticks = [];
+
+    var config = {
+      task: function(dt) {
+        ticks.push(dt);
+      },
+      delay: 2,
+      limit: 10,
+      stop: function() {
+        var avg = ticks.reduce(function(a, b) {
+          return a + b;
+        }) / ticks.length;
+        avg.should.be.lt(this.delay + 1);
+        avg.should.be.gt(this.delay - 0.1);
+        ticks.length.should.equal(this.limit);
+        done();
+      }
+    };
+
+    Ticker(config).start();
+  });
+
+  it('should pass the delta time to the task in async mode', function(done) {
+    var ticks = [];
+
+    var config = {
+      task: function(next, dt) {
+        ticks.push(dt);
+        next();
+      },
+      async: true,
+      delay: 2,
+      limit: 10,
+      stop: function() {
+        var avg = ticks.reduce(function(a, b) {
+          return a + b;
+        }) / ticks.length;
+        avg.should.be.lt(this.delay + 1);
+        avg.should.be.gt(this.delay - 0.1);
+        ticks.length.should.equal(this.limit);
+        done();
+      }
+    };
+
+    Ticker(config).start();
+  });
+
 });
