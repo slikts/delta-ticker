@@ -11,7 +11,7 @@ Differences from `setInterval`:
 
 Asynchronously count to 5 with 15 millisecond intervals:
 
-```
+```javascript
 var count = 0;
 Ticker({ // the `new` keyword is not required
   async: true,
@@ -31,7 +31,7 @@ Ticker({ // the `new` keyword is not required
 
 Endless 100 millosecond interval with a synchronous task:
 
-```
+```js
 Ticker({
   task: function() { // unlike with the async example, there's no `next` argument
     console.log('on and on…');
