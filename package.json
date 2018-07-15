@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/slikts/delta-ticker",
   "devDependencies": {
-    "mocha": "^1.18.2",
-    "chai": "^1.9.1"
+    "mocha": "^5.2.0",
+    "chai": "^4.1.2"
   }
 }
