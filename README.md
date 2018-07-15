@@ -1,5 +1,7 @@
 # Simple delta time ticker
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/slikts/delta-ticker.svg)](https://greenkeeper.io/)
+
 Allows setting intervals using delta time for consistency. 
 
 Differences from `setInterval`: 
